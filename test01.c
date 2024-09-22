@@ -28,7 +28,7 @@ void round_robin(Process processes[], int num_processes, int quantum) {
             if (processes[i].time_remaining > 0) {
                 all_done = 0;
                 processes[i].state = EM_EXECUCAO;
-                printf("Tempo %d: Processo %d em execução\n", current_time, processes[i].id);
+                printf("Tempo %d: Processo %d em execucao\n", current_time, processes[i].id);
 
                 // Executar o processo pelo quantum ou pelo tempo restante, o que for menor
                 int exec_time = (processes[i].time_remaining > quantum) ? quantum : processes[i].time_remaining;
@@ -44,7 +44,7 @@ void round_robin(Process processes[], int num_processes, int quantum) {
                 // Verificar se o processo foi concluído
                 if (processes[i].time_remaining == 0) {
                     processes[i].state = CONCLUIDO;
-                    printf("Tempo %d: Processo %d concluído\n", current_time, processes[i].id);
+                    printf("Tempo %d: Processo %d concluido\n", current_time, processes[i].id);
                 } else {
                     processes[i].state = PRONTO;
                 }
@@ -58,7 +58,8 @@ int main() {
     Process processes[] = {
         {1, 5, PRONTO},
         {2, 3, PRONTO},
-        {3, 7, PRONTO}
+        {3, 7, PRONTO},
+         {4, 8, PRONTO}
     };
 
     int num_processes = sizeof(processes) / sizeof(processes[0]);
@@ -71,7 +72,7 @@ int main() {
     printf("\nEstado final dos processos:\n");
     for (int i = 0; i < num_processes; i++) {
         if (processes[i].state == CONCLUIDO) {
-            printf("Processo %d: Concluído\n", processes[i].id);
+            printf("Processo %d: Concluido\n", processes[i].id);
         }
     }
 
