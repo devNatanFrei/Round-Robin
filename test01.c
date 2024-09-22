@@ -8,58 +8,70 @@ typedef enum {
     CONCLUIDO
 } ProcessState;
 
+// Estrutura para representar um processo
 typedef struct {
     int id;
-    int remaining_time;
+    int time_remaining;
     ProcessState state;
-} Processo;
+} Process;
 
-void pcas(Processo processo[], int num_processos, int quantum) {
-    int time = 0;
-    int all_done;
+// Função para escalonar processos usando o algoritmo FCFS
+void round_robin(Process processes[], int num_processes, int quantum) {
+    int current_time = 0;
+    int all_done = 0;
 
-    do {
-        all_done = 1;
+  while (!all_done)
+  {
+    all_done = 1;
+    for (int i = 0; i < num_processes; i++)
+    {
+      if (processes[i].time_remaining > 0)
+      {
+        all_done = 0;
+        processes[i].state = EM_EXECUCAO;
+        printf("Tempo %d: Processo %d em execucao\n", current_time, processes[i].id);
+       
+        int exec_time = (processes[i].time_remaining > quantum) ? quantum : processes[i].time_remaining;
 
-        for (int i = 0; i < num_processos; i++) {
-            if (processo[i].remaining_time > 0) {
-                all_done = 0;
-                processo[i].state = EM_EXECUCAO;
-                printf("Tempo %d: Processo %d em execução\n", time, processo[i].id);
+        current_time += exec_time;
+        processes[i].time_remaining -= exec_time;
 
-                int exec_time = (processo[i].remaining_time < quantum) ? processo[i].remaining_time : quantum;
+        printf("Tempo %d: Processo %d - Tempo restante: %d\n", current_time, processes[i].id, processes[i].time_remaining);
 
-                processo[i].remaining_time -= exec_time;
-                time += exec_time;
-
-                printf("Tempo %d: Processo %d, tempo restante %d\n", time, processo[i].id, processo[i].remaining_time);
-
-                if (processo[i].remaining_time == 0) {
-                    processo[i].state = CONCLUIDO;
-                    printf("Tempo %d: Processo %d concluído\n", time, processo[i].id);
-                }
-            }
+        if (processes[i].time_remaining == 0)
+        {
+          processes[i].state = CONCLUIDO;
+          printf("Tempo %d: Processo %d concluido\n", current_time, processes[i].id);
+      }else{
+          processes[i].state = PRONTO;
         }
-    } while (!all_done);
 
-   
-    printf("\nEstado final dos processos:\n");
-    for (int i = 0; i < num_processos; i++) {
-        printf("Processo %d: %s\n", processo[i].id, 
-            processo[i].state == CONCLUIDO ? "Concluído" : "Ainda em execução");
+        }
     }
+  }
 }
+  
+
 
 int main() {
-    Processo processo[] = {
-        {1, 7, PRONTO},
-        {2, 5, PRONTO},
-        {3, 8, PRONTO}
+    // Exemplo de utilização
+    Process processes[] = {
+        {1, 5, PRONTO},
+        {2, 3, PRONTO},
+        {3, 7, PRONTO}
+        // Adicione mais processos conforme necessário
     };
 
-    int num_processos = sizeof(processo) / sizeof(processo[0]);
-    int quantum = 2; 
-    pcas(processo, num_processos, quantum);
+    int num_processes = sizeof(processes) / sizeof(processes[0]);
+    int quantum = 2;
+    // Chamar a função de escalonamento FCFS
+    round_robin(processes, num_processes, quantum);
+
+    // Exibir o estado final dos processos
+    printf("Estado final dos processos:\n");
+    for (int i = 0; i < num_processes; i++) {
+        printf("Processo %d: Estado %d\n", processes[i].id, processes[i].state);
+    }
 
     return 0;
 }
