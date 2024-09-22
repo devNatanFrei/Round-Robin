@@ -15,43 +15,43 @@ typedef struct {
     ProcessState state;
 } Process;
 
-// Função para escalonar processos usando o algoritmo FCFS
+// Função para escalonar processos usando o algoritmo Round Robin
 void round_robin(Process processes[], int num_processes, int quantum) {
     int current_time = 0;
     int all_done = 0;
 
-  while (!all_done)
-  {
-    all_done = 1;
-    for (int i = 0; i < num_processes; i++)
-    {
-      if (processes[i].time_remaining > 0)
-      {
-        all_done = 0;
-        processes[i].state = EM_EXECUCAO;
-        printf("Tempo %d: Processo %d em execucao\n", current_time, processes[i].id);
-       
-        int exec_time = (processes[i].time_remaining > quantum) ? quantum : processes[i].time_remaining;
+    while (!all_done) {
+        all_done = 1;
 
-        current_time += exec_time;
-        processes[i].time_remaining -= exec_time;
+        // Iterar sobre todos os processos
+        for (int i = 0; i < num_processes; i++) {
+            if (processes[i].time_remaining > 0) {
+                all_done = 0;
+                processes[i].state = EM_EXECUCAO;
+                printf("Tempo %d: Processo %d em execução\n", current_time, processes[i].id);
 
-        printf("Tempo %d: Processo %d - Tempo restante: %d\n", current_time, processes[i].id, processes[i].time_remaining);
+                // Executar o processo pelo quantum ou pelo tempo restante, o que for menor
+                int exec_time = (processes[i].time_remaining > quantum) ? quantum : processes[i].time_remaining;
 
-        if (processes[i].time_remaining == 0)
-        {
-          processes[i].state = CONCLUIDO;
-          printf("Tempo %d: Processo %d concluido\n", current_time, processes[i].id);
-      }else{
-          processes[i].state = PRONTO;
-        }
+                // Simular a execução segundo a unidade de tempo de 1 em 1
+                for (int t = 0; t < exec_time; t++) {
+                    current_time++;
+                    processes[i].time_remaining--;
 
+                    printf("Tempo %d: Processo %d - Tempo restante: %d\n", current_time, processes[i].id, processes[i].time_remaining);
+                }
+
+                // Verificar se o processo foi concluído
+                if (processes[i].time_remaining == 0) {
+                    processes[i].state = CONCLUIDO;
+                    printf("Tempo %d: Processo %d concluído\n", current_time, processes[i].id);
+                } else {
+                    processes[i].state = PRONTO;
+                }
+            }
         }
     }
-  }
 }
-  
-
 
 int main() {
     // Exemplo de utilização
@@ -59,18 +59,20 @@ int main() {
         {1, 5, PRONTO},
         {2, 3, PRONTO},
         {3, 7, PRONTO}
-        // Adicione mais processos conforme necessário
     };
 
     int num_processes = sizeof(processes) / sizeof(processes[0]);
     int quantum = 2;
-    // Chamar a função de escalonamento FCFS
+
+    // Chamar a função de escalonamento Round Robin
     round_robin(processes, num_processes, quantum);
 
     // Exibir o estado final dos processos
-    printf("Estado final dos processos:\n");
+    printf("\nEstado final dos processos:\n");
     for (int i = 0; i < num_processes; i++) {
-        printf("Processo %d: Estado %d\n", processes[i].id, processes[i].state);
+        if (processes[i].state == CONCLUIDO) {
+            printf("Processo %d: Concluído\n", processes[i].id);
+        }
     }
 
     return 0;
