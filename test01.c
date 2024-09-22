@@ -14,23 +14,37 @@ typedef struct {
     ProcessState state;
 } Process;
 
+int verif(Process processes[], int num_processes)
+{
+    for (int i = 0; i < num_processes; i++)
+    {
+        if (processes[i].state != CONCLUIDO)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void round_robin(Process processes[], int num_processes, int quantum) {
     int current_time = 0;
-    int all_done = 0;
+ 
 
-    while (!all_done) {
-        all_done = 1;
-
-
+    while (verif(processes, num_processes)) {
+  
         for (int i = 0; i < num_processes; i++) {
-            if (processes[i].time_remaining > 0) {
-                all_done = 0;
+            if (processes[i].state == PRONTO) {
+            
                 processes[i].state = EM_EXECUCAO;
                 printf("Tempo %d: Processo %d em execucao\n", current_time, processes[i].id);
 
-              
-                int exec_time = (processes[i].time_remaining > quantum) ? quantum : processes[i].time_remaining;
+                int exec_time = 0;
+                if (processes[i].time_remaining > quantum) {
+                   exec_time = quantum;
+                } else {
+                   exec_time = processes[i].time_remaining ;
+                }
+          
 
 
                 for (int t = 0; t < exec_time; t++) {
