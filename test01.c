@@ -38,16 +38,16 @@ void round_robin(Process processes[], int num_processes, int quantum) {
                 processes[i].state = EM_EXECUCAO;
                 printf("Tempo %d: Processo %d em execucao\n", current_time, processes[i].id);
 
-                int exec_time = 0;
+                int ver = 0;
                 if (processes[i].time_remaining > quantum) {
-                   exec_time = quantum;
+                   ver = quantum;
                 } else {
-                   exec_time = processes[i].time_remaining ;
+                   ver = processes[i].time_remaining ;
                 }
           
 
 
-                for (int t = 0; t < exec_time; t++) {
+                for (int t = 0; t < ver; t++) {
                     current_time++;
                     processes[i].time_remaining--;
 
